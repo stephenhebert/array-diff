@@ -4,13 +4,18 @@ export default function arrayDiff<T>(
   final: T[], 
   { 
     comparator = (a, b) => a.id === b.id,
+    includeModified = true
   }: 
   { 
-    comparator: (a: T, b: T) => boolean 
+    comparator?: (a: T, b: T) => boolean,
+    includeModified?: boolean
   }
 ) {
   const added = final.filter(a => !initial.some(b => comparator(a, b)))
   const removed = initial.filter(b => !final.some(a => comparator(a, b)))
+  
+  if (includeModified === false) return { added, removed }
+
   const modified = initial.reduce((acc, a, aIndex) => {
     const b = final.find(b => comparator(a, b))
     if (!b) return acc
